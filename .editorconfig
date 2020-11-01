@@ -3,3 +3,5 @@ root = true
 [*.{md, ts, js}]
 indent_size = 2
 indent_style = tab
+charset = utf-8
+trim_trailing_whitespace = true
