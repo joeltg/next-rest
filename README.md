@@ -7,7 +7,7 @@ This library is a minimalist framework for writing typesafe validated REST APIs 
 Features:
 
 - **Modularity**: instead of making you define all of your route types in one place, next-rest uses module augmentation so that you can declare each route's type in their respective file.
-- **Minimalism**: the next-rest API client is 100 lines and just calls `fetch` like you'd expect.
+- **Minimalism**: the next-rest API client is 100 lines and just calls `fetch` like you'd expect. next-rest has one non-dev dependency on [http-status-codes](https://www.npmjs.com/package/http-status-codes).
 - **Safety**: next-rest lets you write APIs where the URL parameters, request headers, request body, response headers, and response body are all (!!) strongly typed for each combination of route and method. These get typechecked both at implementation on the server and at invocation on the client, and get validated at runtime on the server (but not the client).
 
 Non-features:
