@@ -12,7 +12,7 @@ Features:
 
 Non-features:
 
-- **External usage**: next-rest is designed for implementing and calling REST APIs within a single next.js application. You can't export your API types, or import a different project's API types.
+- **External usage**: next-rest is designed for implementing and calling REST APIs within a single next.js application. You can't export your API types, or import a different project's API types. If _that's_ what you're after, you probably want something like [restyped](https://github.com/rawrmaan/restyped/).
 
 ## Table of Contents
 
