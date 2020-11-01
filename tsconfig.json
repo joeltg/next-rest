@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"module": "ESNext",
+		"target": "ES2020",
+		"sourceMap": false,
+		"declaration": true,
+		"alwaysStrict": true,
+		"moduleResolution": "node",
+		"esModuleInterop": true
+	}
+}
