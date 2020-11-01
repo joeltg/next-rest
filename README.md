@@ -4,6 +4,8 @@
 
 This library is a minimalist framework for writing typesafe validated REST APIs for next.js in TypeScript.
 
+Status: functional and feature-complete, although the usage interface is likely to change.
+
 Features:
 
 - **Modularity**: instead of making you define all of your route types in one place, next-rest uses module augmentation so that you can declare each route's type in their respective file.
