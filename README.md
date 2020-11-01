@@ -4,7 +4,7 @@
 
 This library is a minimalist framework for writing typesafe validated REST APIs for next.js in TypeScript.
 
-Status: functional and feature-complete, although the usage interface is likely to change.
+Status: ⚠️ functional and feature-complete, although the usage interface is likely to change ⚠️
 
 Features:
 
