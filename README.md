@@ -6,13 +6,13 @@ This library is a minimalist framework for writing typesafe validated REST APIs 
 
 Features:
 
-- Modularity: instead of making you define all of your route types in one place, next-rest uses module augmentation so that you can declare each route's type in their respective file.
-- Minimalism: the next-rest API client is 100 lines and just calls `fetch` like you'd expect.
-- Safety: next-rest lets you write APIs where the URL parameters, request headers, request body, response headers, and response body are all (!!) strongly typed for each combination of route and method. These get typechecked both at implementation on the server and at invocation on the client, and get validated at runtime on the server (but not the client).
+- **Modularity**: instead of making you define all of your route types in one place, next-rest uses module augmentation so that you can declare each route's type in their respective file.
+- **Minimalism**: the next-rest API client is 100 lines and just calls `fetch` like you'd expect.
+- **Safety**: next-rest lets you write APIs where the URL parameters, request headers, request body, response headers, and response body are all (!!) strongly typed for each combination of route and method. These get typechecked both at implementation on the server and at invocation on the client, and get validated at runtime on the server (but not the client).
 
 Non-features:
 
-- External usage: next-rest is designed for implementing and calling REST APIs within a single next.js application. You can't export your API types, or import a different project's API types.
+- **External usage**: next-rest is designed for implementing and calling REST APIs within a single next.js application. You can't export your API types, or import a different project's API types.
 
 ## Table of Contents
 
