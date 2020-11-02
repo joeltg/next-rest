@@ -89,7 +89,7 @@ export const makeHandler = <R extends Routes>(config: {
 	if (result._tag === "Right") {
 		const [headers, body] = result.right
 		for (const key of Object.keys(headers)) {
-			res.setHeader(key, headers[key])
+			res.setHeader(key, headers[key] as string)
 		}
 		if (body === undefined) {
 			res.status(StatusCodes.OK).end()
