@@ -56,7 +56,7 @@ const makeHandler = config => async (req, res) => {
     } else if (body !== undefined) {
       res.status(_httpStatusCodes.default.OK).json(body);
     }
-  } else if (_httpStatusCodes.default.hasOwnProperty(result.left)) {
+  } else if (typeof result.left === "number") {
     res.status(result.left).end();
   } else {
     res.status(_httpStatusCodes.default.INTERNAL_SERVER_ERROR).end();

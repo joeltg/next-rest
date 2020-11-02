@@ -14,9 +14,7 @@ import {
 	ResponseHeaders,
 } from "."
 
-type Right<T> = { _tag: "Right"; right: T }
-type Left<T> = { _tag: "Left"; left: T }
-type Either<L, R> = Left<L> | Right<R>
+import { Right, Left, Either } from "./option"
 
 type Handler<R extends Routes> = (
 	req: NextApiRequest,
@@ -98,7 +96,7 @@ export const makeHandler = <R extends Routes>(config: {
 		} else if (body !== undefined) {
 			res.status(StatusCodes.OK).json(body)
 		}
-	} else if (StatusCodes.hasOwnProperty(result.left)) {
+	} else if (typeof result.left === "number") {
 		res.status(result.left).end()
 	} else {
 		res.status(StatusCodes.INTERNAL_SERVER_ERROR).end()

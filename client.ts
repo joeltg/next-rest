@@ -83,27 +83,24 @@ async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
 		const responseHeaders = parseHeaders(res.headers) as ResponseHeaders<M, R>
 		return [responseHeaders, responseBody]
 	} else {
-		throw new Error(`${res.status} ${res.statusText}`)
+		throw res.status
 	}
 }
 
+const makeMethod = <M extends Method>(method: M) => <
+	R extends RoutesByMethod<M>
+>(
+	route: R,
+	params: API[R]["params"],
+	headers: RequestHeaders<M, R>,
+	body: RequestBody<M, R>
+) => clientFetch(method, route, params, headers, body)
+
 export default {
-	get: <R extends RoutesByMethod<"GET">>(
-		route: R,
-		params: API[R]["params"],
-		headers: RequestHeaders<"GET", R>,
-		body: RequestBody<"GET", R>
-	) => clientFetch("GET", route, params, headers, body),
-	put: <R extends RoutesByMethod<"PUT">>(
-		route: R,
-		params: API[R]["params"],
-		headers: RequestHeaders<"PUT", R>,
-		body: RequestBody<"PUT", R>
-	) => clientFetch("PUT", route, params, headers, body),
-	post: <R extends RoutesByMethod<"POST">>(
-		route: R,
-		params: API[R]["params"],
-		headers: RequestHeaders<"POST", R>,
-		body: RequestBody<"POST", R>
-	) => clientFetch("POST", route, params, headers, body),
+	get: makeMethod("GET"),
+	put: makeMethod("PUT"),
+	post: makeMethod("POST"),
+	head: makeMethod("HEAD"),
+	patch: makeMethod("PATCH"),
+	delete: makeMethod("DELETE"),
 }

@@ -21,7 +21,7 @@ interface Signature {
 	body: any
 }
 
-export type Method = "GET" | "PUT" | "POST"
+export type Method = "GET" | "PUT" | "POST" | "HEAD" | "PATCH" | "DELETE"
 
 type GetMethodSignature<M, R> = R extends Routes
 	? API[R] extends RouteSignature

@@ -76,13 +76,18 @@ async function clientFetch(method, route, params, headers, body) {
     const responseHeaders = parseHeaders(res.headers);
     return [responseHeaders, responseBody];
   } else {
-    throw new Error(`${res.status} ${res.statusText}`);
+    throw res.status;
   }
 }
 
+const makeMethod = method => (route, params, headers, body) => clientFetch(method, route, params, headers, body);
+
 var _default = {
-  get: (route, params, headers, body) => clientFetch("GET", route, params, headers, body),
-  put: (route, params, headers, body) => clientFetch("PUT", route, params, headers, body),
-  post: (route, params, headers, body) => clientFetch("POST", route, params, headers, body)
+  get: makeMethod("GET"),
+  put: makeMethod("PUT"),
+  post: makeMethod("POST"),
+  head: makeMethod("HEAD"),
+  patch: makeMethod("PATCH"),
+  delete: makeMethod("DELETE")
 };
 exports.default = _default;
