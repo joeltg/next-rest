@@ -30,21 +30,19 @@ const hasMethod = <R extends Routes>(
 	method !== undefined && methods.hasOwnProperty(method)
 
 type Result<R extends Routes, M extends MethodsByRoute<R>> = [
-	ResponseHeaders<M, RoutesByMethod<M>>,
-	ResponseBody<M, RoutesByMethod<M>>
+	ResponseHeaders<M, R>,
+	ResponseBody<M, R>
 ]
 
 type Methods<R extends Routes> = {
 	[M in MethodsByRoute<R>]: {
-		headers: (
-			headers: IncomingHttpHeaders
-		) => headers is RequestHeaders<M, RoutesByMethod<M>>
-		body: (body: unknown) => body is RequestBody<M, RoutesByMethod<M>>
+		headers: (headers: IncomingHttpHeaders) => headers is RequestHeaders<M, R>
+		body: (body: unknown) => body is RequestBody<M, R>
 		exec: (
 			req: NextApiRequest,
 			params: API[R]["params"],
-			headers: RequestHeaders<M, RoutesByMethod<M>>,
-			body: RequestBody<M, RoutesByMethod<M>>
+			headers: RequestHeaders<M, R>,
+			body: RequestBody<M, R>
 		) => Promise<Result<R, M>>
 	}
 }
