@@ -7,7 +7,7 @@ export type Route<T extends RouteSignature> = T
 export type Routes = keyof API
 
 interface RouteSignature {
-	params: { [key: string]: string | string[] }
+	params: { [key: string]: undefined | string | string[] }
 	methods: { [m in Method]?: MethodSignature }
 }
 
