@@ -75,10 +75,7 @@ async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
 	params: API[R]["params"],
 	headers: RequestHeaders<M, R>,
 	body: RequestBody<M, R>,
-	bodyParser?: (
-		res: Response,
-		contentType: string
-	) => Promise<ResponseBody<M, R>>
+	parser: (res: Response, contentType: string) => Promise<ResponseBody<M, R>>
 ): Promise<[ResponseHeaders<M, R>, ResponseBody<M, R>]> {
 	const mode = "same-origin"
 	const init: RequestInit = {
@@ -98,10 +95,8 @@ async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
 
 		const responseBody =
 			contentType === null
-				? undefined
-				: bodyParser === undefined
-				? await res.json()
-				: await bodyParser(res, contentType)
+				? (undefined as ResponseBody<M, R>)
+				: await parser(res, contentType)
 
 		const responseHeaders = parseHeaders(res.headers) as ResponseHeaders<M, R>
 		return [responseHeaders, responseBody]
@@ -110,14 +105,20 @@ async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
 	}
 }
 
+const defaultParser = (res: Response, contentType: string) => res.json()
+
 const makeMethod = <M extends Method>(method: M) => <
 	R extends RoutesByMethod<M>
 >(
 	route: R,
 	params: API[R]["params"],
 	headers: RequestHeaders<M, R>,
-	body: RequestBody<M, R>
-) => clientFetch(method, route, params, headers, body)
+	body: RequestBody<M, R>,
+	parser: (
+		res: Response,
+		contentType: string
+	) => Promise<ResponseBody<M, R>> = defaultParser
+) => clientFetch(method, route, params, headers, body, parser)
 
 export default {
 	get: makeMethod("GET"),

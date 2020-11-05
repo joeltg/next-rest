@@ -75,7 +75,7 @@ function parseHeaders(headers) {
   return result;
 }
 
-async function clientFetch(method, route, params, headers, body, bodyParser) {
+async function clientFetch(method, route, params, headers, body, parser) {
   const mode = "same-origin";
   const init = {
     method,
@@ -92,7 +92,7 @@ async function clientFetch(method, route, params, headers, body, bodyParser) {
 
   if (res.status === _httpStatusCodes.default.OK) {
     const contentType = res.headers.get("content-type");
-    const responseBody = contentType === null ? undefined : bodyParser === undefined ? await res.json() : await bodyParser(res, contentType);
+    const responseBody = contentType === null ? undefined : await parser(res, contentType);
     const responseHeaders = parseHeaders(res.headers);
     return [responseHeaders, responseBody];
   } else {
@@ -100,7 +100,9 @@ async function clientFetch(method, route, params, headers, body, bodyParser) {
   }
 }
 
-const makeMethod = method => (route, params, headers, body) => clientFetch(method, route, params, headers, body);
+const defaultParser = (res, contentType) => res.json();
+
+const makeMethod = method => (route, params, headers, body, parser = defaultParser) => clientFetch(method, route, params, headers, body, parser);
 
 var _default = {
   get: makeMethod("GET"),
