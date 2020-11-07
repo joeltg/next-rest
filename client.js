@@ -54,7 +54,7 @@ function makeURL(route, params) {
 
       if (typeof value === "string") {
         query.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
-      } else {
+      } else if (value !== undefined) {
         throw new Error(`Invalid URL query parameter: ${key}`);
       }
     }

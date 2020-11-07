@@ -14,7 +14,7 @@ const componentPattern = /^\[(.+)\]$/
 
 function makeURL(
 	route: string,
-	params: { [key: string]: string | string[] }
+	params: { [key: string]: undefined | string | string[] }
 ): string {
 	const path: string[] = []
 
@@ -51,7 +51,7 @@ function makeURL(
 			const value = params[key]
 			if (typeof value === "string") {
 				query.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-			} else {
+			} else if (value !== undefined) {
 				throw new Error(`Invalid URL query parameter: ${key}`)
 			}
 		}

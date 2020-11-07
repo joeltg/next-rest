@@ -1,6 +1,6 @@
 {
 	"name": "next-rest",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"description": "Typesafe REST APIs for next.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
