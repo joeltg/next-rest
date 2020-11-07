@@ -6,7 +6,6 @@ import { NextApiRequest, NextApiResponse } from "next"
 import {
 	API,
 	Routes,
-	RoutesByMethod,
 	MethodsByRoute,
 	RequestBody,
 	ResponseBody,
@@ -18,9 +17,7 @@ import { Right, Left, Either } from "./option"
 
 type Handler<R extends Routes> = (
 	req: NextApiRequest,
-	res: NextApiResponse<
-		ResponseBody<MethodsByRoute<R>, RoutesByMethod<MethodsByRoute<R>>>
-	>
+	res: NextApiResponse<ResponseBody<MethodsByRoute<R>, R>>
 ) => void
 
 const hasMethod = <R extends Routes>(
@@ -48,7 +45,7 @@ type Methods<R extends Routes> = {
 }
 
 type ValidateParams<R extends Routes> = (
-	params: Record<string, string | string[]>
+	params: Record<string, undefined | string | string[]>
 ) => params is API[R]["params"]
 
 export const makeHandler = <R extends Routes>(config: {

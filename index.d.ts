@@ -33,21 +33,21 @@ type GetMethodSignature<M, R> = R extends Routes
 
 export type RequestBody<
 	M extends Method,
-	R extends RoutesByMethod<M>
+	R extends Routes
 > = GetMethodSignature<M, R> extends MethodSignature
 	? GetMethodSignature<M, R>["request"]["body"]
 	: void
 
 export type ResponseBody<
 	M extends Method,
-	R extends RoutesByMethod<M>
+	R extends Routes
 > = GetMethodSignature<M, R> extends MethodSignature
 	? GetMethodSignature<M, R>["response"]["body"]
 	: void
 
 export type RequestHeaders<
 	M extends Method,
-	R extends RoutesByMethod<M>
+	R extends Routes
 > = GetMethodSignature<M, R> extends MethodSignature
 	? GetMethodSignature<M, R>["request"]["headers"] extends IncomingHttpHeaders
 		? GetMethodSignature<M, R>["request"]["headers"]
@@ -56,7 +56,7 @@ export type RequestHeaders<
 
 export type ResponseHeaders<
 	M extends Method,
-	R extends RoutesByMethod<M>
+	R extends Routes
 > = GetMethodSignature<M, R> extends MethodSignature
 	? GetMethodSignature<M, R>["response"]["headers"] extends IncomingHttpHeaders
 		? GetMethodSignature<M, R>["response"]["headers"]

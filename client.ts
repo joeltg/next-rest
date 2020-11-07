@@ -105,7 +105,7 @@ async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
 	}
 }
 
-const defaultParser = (res: Response, contentType: string) => res.json()
+const defaultParser = (res: Response, _: string) => res.json()
 
 const makeMethod = <M extends Method>(method: M) => <
 	R extends RoutesByMethod<M>

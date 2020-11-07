@@ -100,7 +100,7 @@ async function clientFetch(method, route, params, headers, body, parser) {
   }
 }
 
-const defaultParser = (res, contentType) => res.json();
+const defaultParser = (res, _) => res.json();
 
 const makeMethod = method => (route, params, headers, body, parser = defaultParser) => clientFetch(method, route, params, headers, body, parser);
 
