@@ -2,7 +2,7 @@
 
 > Typesafe REST APIs for next.js
 
-This library is a lightweight framework for writing typesafe validated REST APIs for next.js in TypeScript.
+This library is a lightweight framework for writing typesafe end-to-end validated REST APIs for next.js in TypeScript.
 
 Status: ⚠️ functional and feature-complete, although the usage interface is likely to change ⚠️
 
