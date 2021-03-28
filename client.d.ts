@@ -1,9 +1,5 @@
-import type { API, RequestBody, ResponseBody, RequestHeaders, ResponseHeaders } from ".";
-export declare class ApiError extends Error {
-    readonly message: string;
-    readonly status?: number | undefined;
-    constructor(message: string, status?: number | undefined);
-}
+import { API, RequestBody, ResponseBody, RequestHeaders, ResponseHeaders } from ".";
+export { ApiError } from "./error.js";
 declare const _default: {
     get: <R extends never>(route: R, params: API[R]["params"], headers: RequestHeaders<"GET", R>, body: RequestBody<"GET", R>, parser?: (res: Response) => Promise<ResponseBody<"GET", R>>) => Promise<[ResponseHeaders<"GET", R>, ResponseBody<"GET", R>]>;
     put: <R_1 extends never>(route: R_1, params: API[R_1]["params"], headers: RequestHeaders<"PUT", R_1>, body: RequestBody<"PUT", R_1>, parser?: (res: Response) => Promise<ResponseBody<"PUT", R_1>>) => Promise<[ResponseHeaders<"PUT", R_1>, ResponseBody<"PUT", R_1>]>;

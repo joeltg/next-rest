@@ -1,7 +1,8 @@
 /// <reference types="node" />
-import type { IncomingHttpHeaders } from "http";
-import type { NextApiRequest, NextApiResponse } from "next";
-import type { API, Routes, MethodsByRoute, RequestBody, ResponseBody, RequestHeaders, ResponseHeaders } from ".";
+import { IncomingHttpHeaders } from "http";
+import { NextApiRequest, NextApiResponse } from "next";
+import { API, Routes, MethodsByRoute, RequestBody, ResponseBody, RequestHeaders, ResponseHeaders } from ".";
+export { ApiError } from "./error.js";
 declare type Handler<R extends Routes> = (req: NextApiRequest, res: NextApiResponse<ResponseBody<MethodsByRoute<R>, R>>) => void;
 declare type Result<R extends Routes, M extends MethodsByRoute<R>> = [
     ResponseHeaders<M, R>,
@@ -19,4 +20,3 @@ export declare const makeHandler: <R extends never>(config: {
     params: ValidateParams<R>;
     methods: Methods<R>;
 }) => Handler<R>;
-export {};

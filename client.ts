@@ -1,5 +1,5 @@
 import StatusCodes from "http-status-codes"
-import type {
+import {
 	API,
 	Method,
 	RoutesByMethod,
@@ -9,14 +9,11 @@ import type {
 	ResponseHeaders,
 } from "."
 
+import { ApiError } from "./error.js"
+export { ApiError } from "./error.js"
+
 const restComponentPattern = /\[\.\.\.(.+)\]^$/
 const componentPattern = /^\[(.+)\]$/
-
-export class ApiError extends Error {
-	constructor(readonly message: string, readonly status?: number) {
-		super(message)
-	}
-}
 
 function makeURL(
 	route: string,
@@ -34,7 +31,10 @@ function makeURL(
 					path.push(encodeURIComponent(value))
 				}
 			} else {
-				throw new ApiError(`Invalid URL rest parameter: ${param}`)
+				throw new ApiError(
+					StatusCodes.BAD_REQUEST,
+					`Invalid URL rest parameter: ${param}`
+				)
 			}
 		} else if (componentPattern.test(component)) {
 			const [{}, param] = componentPattern.exec(component)!
@@ -43,7 +43,10 @@ function makeURL(
 				delete params[param]
 				path.push(encodeURIComponent(value))
 			} else {
-				throw new ApiError(`Invalid URL parameter: ${param}`)
+				throw new ApiError(
+					StatusCodes.BAD_REQUEST,
+					`Invalid URL parameter: ${param}`
+				)
 			}
 		} else {
 			path.push(encodeURIComponent(component))
@@ -58,7 +61,10 @@ function makeURL(
 			if (typeof value === "string") {
 				query.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
 			} else if (value !== undefined) {
-				throw new ApiError(`Invalid URL query parameter: ${key}`)
+				throw new ApiError(
+					StatusCodes.BAD_REQUEST,
+					`Invalid URL query parameter: ${key}`
+				)
 			}
 		}
 		return `${path.join("/")}?${query.join("&")}`
@@ -104,7 +110,7 @@ async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
 		const responseHeaders = parseHeaders(res.headers) as ResponseHeaders<M, R>
 		return [responseHeaders, responseBody]
 	} else {
-		throw new ApiError(res.statusText, res.status)
+		throw new ApiError(res.status)
 	}
 }
 

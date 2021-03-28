@@ -5,16 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApiError = void 0;
 const http_status_codes_1 = __importDefault(require("http-status-codes"));
+const error_js_1 = require("./error.js");
+var error_js_2 = require("./error.js");
+Object.defineProperty(exports, "ApiError", { enumerable: true, get: function () { return error_js_2.ApiError; } });
 const restComponentPattern = /\[\.\.\.(.+)\]^$/;
 const componentPattern = /^\[(.+)\]$/;
-class ApiError extends Error {
-    constructor(message, status) {
-        super(message);
-        this.message = message;
-        this.status = status;
-    }
-}
-exports.ApiError = ApiError;
 function makeURL(route, params) {
     const path = [];
     for (const component of route.split("/")) {
@@ -28,7 +23,7 @@ function makeURL(route, params) {
                 }
             }
             else {
-                throw new ApiError(`Invalid URL rest parameter: ${param}`);
+                throw new error_js_1.ApiError(http_status_codes_1.default.BAD_REQUEST, `Invalid URL rest parameter: ${param}`);
             }
         }
         else if (componentPattern.test(component)) {
@@ -39,7 +34,7 @@ function makeURL(route, params) {
                 path.push(encodeURIComponent(value));
             }
             else {
-                throw new ApiError(`Invalid URL parameter: ${param}`);
+                throw new error_js_1.ApiError(http_status_codes_1.default.BAD_REQUEST, `Invalid URL parameter: ${param}`);
             }
         }
         else {
@@ -55,7 +50,7 @@ function makeURL(route, params) {
                 query.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
             }
             else if (value !== undefined) {
-                throw new ApiError(`Invalid URL query parameter: ${key}`);
+                throw new error_js_1.ApiError(http_status_codes_1.default.BAD_REQUEST, `Invalid URL query parameter: ${key}`);
             }
         }
         return `${path.join("/")}?${query.join("&")}`;
@@ -93,7 +88,7 @@ async function clientFetch(method, route, params, headers, body, parser) {
         return [responseHeaders, responseBody];
     }
     else {
-        throw new ApiError(res.statusText, res.status);
+        throw new error_js_1.ApiError(res.status);
     }
 }
 const defaultParser = (res) => res.json();

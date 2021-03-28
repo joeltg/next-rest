@@ -1,7 +1,18 @@
 {
 	"name": "next-rest",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Typesafe REST APIs for next.js",
+	"main": "index.d.ts",
+	"files": [
+		"client.js",
+		"client.d.ts",
+		"error.d.ts",
+		"error.js",
+		"index.d.ts",
+		"option.d.ts",
+		"server.d.ts",
+		"server.js"
+	],
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},

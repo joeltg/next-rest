@@ -1,9 +1,9 @@
-import type { IncomingHttpHeaders } from "http"
-import StatusCodes from "http-status-codes"
+import { IncomingHttpHeaders } from "http"
+import { StatusCodes, ReasonPhrases, getReasonPhrase } from "http-status-codes"
 
-import type { NextApiRequest, NextApiResponse } from "next"
+import { NextApiRequest, NextApiResponse } from "next"
 
-import type {
+import {
 	API,
 	Routes,
 	MethodsByRoute,
@@ -14,6 +14,9 @@ import type {
 } from "."
 
 import type { Right, Left, Either } from "./option"
+
+import { ApiError } from "./error.js"
+export { ApiError } from "./error.js"
 
 type Handler<R extends Routes> = (
 	req: NextApiRequest,
@@ -92,9 +95,12 @@ export const makeHandler = <R extends Routes>(config: {
 		} else {
 			res.status(StatusCodes.OK).json(body)
 		}
-	} else if (typeof result.left === "number") {
-		res.status(result.left).end()
+	} else if (result.left instanceof ApiError) {
+		const message = result.left.message || getReasonPhrase(result.left.status)
+		res.status(result.left.status).end(message)
 	} else {
-		res.status(StatusCodes.INTERNAL_SERVER_ERROR).end()
+		res
+			.status(StatusCodes.INTERNAL_SERVER_ERROR)
+			.end(ReasonPhrases.INTERNAL_SERVER_ERROR)
 	}
 }
