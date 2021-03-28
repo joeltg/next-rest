@@ -3,7 +3,7 @@ import StatusCodes from "http-status-codes"
 
 import { NextApiRequest, NextApiResponse } from "next"
 
-import {
+import type {
 	API,
 	Routes,
 	MethodsByRoute,
@@ -13,7 +13,7 @@ import {
 	ResponseHeaders,
 } from "."
 
-import { Right, Left, Either } from "./option"
+import type { Right, Left, Either } from "./option"
 
 type Handler<R extends Routes> = (
 	req: NextApiRequest,
@@ -86,9 +86,10 @@ export const makeHandler = <R extends Routes>(config: {
 		for (const key of Object.keys(headers)) {
 			res.setHeader(key, headers[key] as string)
 		}
+
 		if (body === undefined) {
-			res.status(StatusCodes.OK).end()
-		} else if (body !== undefined) {
+			res.status(StatusCodes.NO_CONTENT).end()
+		} else {
 			res.status(StatusCodes.OK).json(body)
 		}
 	} else if (typeof result.left === "number") {

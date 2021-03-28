@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { IncomingHttpHeaders } from "http";
 import { NextApiRequest, NextApiResponse } from "next";
-import { API, Routes, MethodsByRoute, RequestBody, ResponseBody, RequestHeaders, ResponseHeaders } from ".";
+import type { API, Routes, MethodsByRoute, RequestBody, ResponseBody, RequestHeaders, ResponseHeaders } from ".";
 declare type Handler<R extends Routes> = (req: NextApiRequest, res: NextApiResponse<ResponseBody<MethodsByRoute<R>, R>>) => void;
 declare type Result<R extends Routes, M extends MethodsByRoute<R>> = [
     ResponseHeaders<M, R>,

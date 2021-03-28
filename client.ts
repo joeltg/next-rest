@@ -1,5 +1,5 @@
 import StatusCodes from "http-status-codes"
-import {
+import type {
 	API,
 	Method,
 	RoutesByMethod,
@@ -11,6 +11,12 @@ import {
 
 const restComponentPattern = /\[\.\.\.(.+)\]^$/
 const componentPattern = /^\[(.+)\]$/
+
+export class ApiError extends Error {
+	constructor(readonly message: string, readonly status?: number) {
+		super(message)
+	}
+}
 
 function makeURL(
 	route: string,
@@ -28,7 +34,7 @@ function makeURL(
 					path.push(encodeURIComponent(value))
 				}
 			} else {
-				throw new Error(`Invalid URL rest parameter: ${param}`)
+				throw new ApiError(`Invalid URL rest parameter: ${param}`)
 			}
 		} else if (componentPattern.test(component)) {
 			const [{}, param] = componentPattern.exec(component)!
@@ -37,7 +43,7 @@ function makeURL(
 				delete params[param]
 				path.push(encodeURIComponent(value))
 			} else {
-				throw new Error(`Invalid URL parameter: ${param}`)
+				throw new ApiError(`Invalid URL parameter: ${param}`)
 			}
 		} else {
 			path.push(encodeURIComponent(component))
@@ -52,7 +58,7 @@ function makeURL(
 			if (typeof value === "string") {
 				query.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
 			} else if (value !== undefined) {
-				throw new Error(`Invalid URL query parameter: ${key}`)
+				throw new ApiError(`Invalid URL query parameter: ${key}`)
 			}
 		}
 		return `${path.join("/")}?${query.join("&")}`
@@ -75,7 +81,7 @@ async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
 	params: API[R]["params"],
 	headers: RequestHeaders<M, R>,
 	body: RequestBody<M, R>,
-	parser: (res: Response, contentType: string) => Promise<ResponseBody<M, R>>
+	parser: (res: Response) => Promise<ResponseBody<M, R>>
 ): Promise<[ResponseHeaders<M, R>, ResponseBody<M, R>]> {
 	const mode = "same-origin"
 	const init: RequestInit = {
@@ -90,22 +96,19 @@ async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
 
 	const url = makeURL(route, params)
 	const res = await fetch(url, init)
-	if (res.status === StatusCodes.OK) {
-		const contentType = res.headers.get("content-type")
-
-		const responseBody =
-			contentType === null
-				? (undefined as ResponseBody<M, R>)
-				: await parser(res, contentType)
-
+	if (res.status === StatusCodes.NO_CONTENT) {
+		const responseHeaders = parseHeaders(res.headers) as ResponseHeaders<M, R>
+		return [responseHeaders, undefined as ResponseBody<M, R>]
+	} else if (res.status === StatusCodes.OK) {
+		const responseBody = await parser(res)
 		const responseHeaders = parseHeaders(res.headers) as ResponseHeaders<M, R>
 		return [responseHeaders, responseBody]
 	} else {
-		throw res.status
+		throw new ApiError(res.statusText, res.status)
 	}
 }
 
-const defaultParser = (res: Response, _: string) => res.json()
+const defaultParser = (res: Response) => res.json()
 
 const makeMethod = <M extends Method>(method: M) => <
 	R extends RoutesByMethod<M>
@@ -114,10 +117,7 @@ const makeMethod = <M extends Method>(method: M) => <
 	params: API[R]["params"],
 	headers: RequestHeaders<M, R>,
 	body: RequestBody<M, R>,
-	parser: (
-		res: Response,
-		contentType: string
-	) => Promise<ResponseBody<M, R>> = defaultParser
+	parser: (res: Response) => Promise<ResponseBody<M, R>> = defaultParser
 ) => clientFetch(method, route, params, headers, body, parser)
 
 export default {
