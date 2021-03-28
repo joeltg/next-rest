@@ -1,7 +1,7 @@
-import { IncomingHttpHeaders } from "http"
+import type { IncomingHttpHeaders } from "http"
 import StatusCodes from "http-status-codes"
 
-import { NextApiRequest, NextApiResponse } from "next"
+import type { NextApiRequest, NextApiResponse } from "next"
 
 import type {
 	API,
