@@ -1,11 +1,8 @@
 {
-	"compilerOptions": {
-		"strict": true,
-		"module": "CommonJS",
-		"target": "ES2020",
-		"declaration": true,
-		"alwaysStrict": true,
-		"moduleResolution": "node",
-		"esModuleInterop": true
-	}
+	"files": [],
+	"references": [
+		{ "path": "./api" },
+		{ "path": "./client" },
+		{ "path": "./server" }
+	]
 }

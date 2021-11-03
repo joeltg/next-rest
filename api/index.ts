@@ -1,4 +1,4 @@
-import { IncomingHttpHeaders } from "http"
+import type { IncomingHttpHeaders, OutgoingHttpHeaders } from "http"
 
 export interface API {}
 
@@ -6,27 +6,25 @@ export type Route<T extends RouteSignature> = T
 
 export type Routes = keyof API
 
-interface RouteSignature {
-	params: { [key: string]: undefined | string | string[] }
-	methods: { [m in Method]?: MethodSignature }
-}
+type RouteSignature = Partial<Record<Method, MethodSignature>>
 
 interface MethodSignature {
-	request: Signature
-	response: Signature
-}
-
-interface Signature {
-	headers: IncomingHttpHeaders
-	body: any
+	request: {
+		headers: IncomingHttpHeaders
+		body?: any
+	}
+	response: {
+		headers: OutgoingHttpHeaders
+		body?: any
+	}
 }
 
 export type Method = "GET" | "PUT" | "POST" | "HEAD" | "PATCH" | "DELETE"
 
 type GetMethodSignature<M, R> = R extends Routes
 	? API[R] extends RouteSignature
-		? M extends keyof API[R]["methods"]
-			? API[R]["methods"][M]
+		? M extends keyof API[R]
+			? API[R][M]
 			: never
 		: never
 	: never
@@ -64,9 +62,20 @@ export type ResponseHeaders<
 	: never
 
 export type RoutesByMethod<M extends Method> = {
-	[R in Routes]: M extends keyof API[R]["methods"] ? R : never
+	[R in Routes]: M extends keyof API[R] ? R : never
 }[Routes]
 
 export type MethodsByRoute<R extends Routes> = {
-	[M in keyof API[R]["methods"]]: M extends Method ? M : never
-}[keyof API[R]["methods"]]
+	[M in keyof API[R]]: M extends Method ? M : never
+}[keyof API[R]]
+
+export type Params<R extends string> =
+	R extends `/[[...${infer OptionalCatchAllParam}]]${infer OptionalCatchAllRest}`
+		? { [P in OptionalCatchAllParam]?: string[] } & Params<OptionalCatchAllRest>
+		: R extends `/[...${infer CatchAllParam}]${infer CatchAllRest}`
+		? { [P in CatchAllParam]: string[] } & Params<CatchAllRest>
+		: R extends `/[${infer Param}]${infer Rest}`
+		? { [P in Param]: string } & Params<Rest>
+		: R extends `/${string}/${infer Rest}`
+		? Params<`/${Rest}`>
+		: {}

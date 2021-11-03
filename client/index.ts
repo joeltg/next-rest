@@ -1,49 +1,64 @@
 import StatusCodes from "http-status-codes"
-import {
-	API,
+
+import type {
 	Method,
 	RoutesByMethod,
 	RequestBody,
 	ResponseBody,
 	RequestHeaders,
 	ResponseHeaders,
-} from "."
+	Params,
+} from "../api/index.js"
 
-import { ApiError } from "./error.js"
-export { ApiError } from "./error.js"
+import { ClientError } from "./error.js"
+export { ClientError } from "./error.js"
 
+const optionalRestComponentPattern = /\[\[\.\.\.(.+)\]\]^$/
 const restComponentPattern = /\[\.\.\.(.+)\]^$/
 const componentPattern = /^\[(.+)\]$/
 
-function makeURL(
-	route: string,
-	params: { [key: string]: undefined | string | string[] }
-): string {
+function makeURL<R extends string>(route: R, params: Params<R>): string {
+	const p = params as Record<string, string | string[]>
 	const path: string[] = []
-
 	for (const component of route.split("/")) {
-		if (restComponentPattern.test(component)) {
+		if (optionalRestComponentPattern.test(component)) {
 			const [{}, param] = restComponentPattern.exec(component)!
-			const values = params[param]
+			if (param in p) {
+				const values = p[param]
+				if (Array.isArray(values)) {
+					delete p[param]
+					for (const value of values) {
+						path.push(encodeURIComponent(value))
+					}
+				} else {
+					throw new ClientError(
+						StatusCodes.BAD_REQUEST,
+						`Invalid URL rest parameter: ${param}`
+					)
+				}
+			}
+		} else if (restComponentPattern.test(component)) {
+			const [{}, param] = restComponentPattern.exec(component)!
+			const values = p[param]
 			if (Array.isArray(values)) {
-				delete params[param]
+				delete p[param]
 				for (const value of values) {
 					path.push(encodeURIComponent(value))
 				}
 			} else {
-				throw new ApiError(
+				throw new ClientError(
 					StatusCodes.BAD_REQUEST,
 					`Invalid URL rest parameter: ${param}`
 				)
 			}
 		} else if (componentPattern.test(component)) {
 			const [{}, param] = componentPattern.exec(component)!
-			const value = params[param]
+			const value = p[param]
 			if (typeof value === "string") {
-				delete params[param]
+				delete p[param]
 				path.push(encodeURIComponent(value))
 			} else {
-				throw new ApiError(
+				throw new ClientError(
 					StatusCodes.BAD_REQUEST,
 					`Invalid URL parameter: ${param}`
 				)
@@ -57,11 +72,11 @@ function makeURL(
 	if (keys.length > 0) {
 		const query: string[] = []
 		for (const key of keys) {
-			const value = params[key]
+			const value = p[key]
 			if (typeof value === "string") {
 				query.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
 			} else if (value !== undefined) {
-				throw new ApiError(
+				throw new ClientError(
 					StatusCodes.BAD_REQUEST,
 					`Invalid URL query parameter: ${key}`
 				)
@@ -84,11 +99,10 @@ function parseHeaders(headers: Headers): Record<string, string> {
 async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
 	method: M,
 	route: R,
-	params: API[R]["params"],
+	params: Params<R>,
 	headers: RequestHeaders<M, R>,
-	body: RequestBody<M, R>,
-	parser: (res: Response) => Promise<ResponseBody<M, R>>
-): Promise<[ResponseHeaders<M, R>, ResponseBody<M, R>]> {
+	body: RequestBody<M, R>
+): Promise<{ headers: ResponseHeaders<M, R>; body: ResponseBody<M, R> }> {
 	const mode = "same-origin"
 	const init: RequestInit = {
 		method,
@@ -104,27 +118,27 @@ async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
 	const res = await fetch(url, init)
 	if (res.status === StatusCodes.NO_CONTENT) {
 		const responseHeaders = parseHeaders(res.headers) as ResponseHeaders<M, R>
-		return [responseHeaders, undefined as ResponseBody<M, R>]
+		return { headers: responseHeaders, body: undefined as ResponseBody<M, R> }
 	} else if (res.status === StatusCodes.OK) {
-		const responseBody = await parser(res)
+		const responseBody = await res.json()
 		const responseHeaders = parseHeaders(res.headers) as ResponseHeaders<M, R>
-		return [responseHeaders, responseBody]
+		return { headers: responseHeaders, body: responseBody }
 	} else {
-		throw new ApiError(res.status)
+		throw new ClientError(res.status)
 	}
 }
 
-const defaultParser = (res: Response) => res.json()
-
-const makeMethod = <M extends Method>(method: M) => <
-	R extends RoutesByMethod<M>
->(
-	route: R,
-	params: API[R]["params"],
-	headers: RequestHeaders<M, R>,
-	body: RequestBody<M, R>,
-	parser: (res: Response) => Promise<ResponseBody<M, R>> = defaultParser
-) => clientFetch(method, route, params, headers, body, parser)
+const makeMethod =
+	<M extends Method>(method: M) =>
+	<R extends RoutesByMethod<M>>(
+		route: R,
+		request: {
+			params: Params<R>
+			headers: RequestHeaders<M, R>
+			body: RequestBody<M, R>
+		}
+	) =>
+		clientFetch(method, route, request.params, request.headers, request.body)
 
 export default {
 	get: makeMethod("GET"),

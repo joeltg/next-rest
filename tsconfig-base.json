@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"composite": true,
+		"strict": true,
+		"module": "ES6",
+		"target": "ES2020",
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true
+	}
+}
