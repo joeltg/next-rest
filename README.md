@@ -1,6 +1,6 @@
 # next-rest
 
-[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme) [![license](https://img.shields.io/github/license/joeltg/next-rest)](https://opensource.org/licenses/MIT) [![NPM version](https://img.shields.io/npm/v/next-rest)](https://www.npmjs.com/package/next-rest) ![TypeScript types](https://img.shields.io/npm/types/next-rest) ![lines of code](https://img.shields.io/tokei/lines/github/joeltg/next-rest)
+[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme) [![license](https://img.shields.io/github/license/joeltg/next-rest)](https://opensource.org/licenses/MIT) [![NPM version](https://img.shields.io/npm/v/next-rest)](https://www.npmjs.com/package/next-rest) ![TypeScript types](https://img.shields.io/npm/types/next-rest)
 
 Typesafe REST APIs for Next.js.
 
