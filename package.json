@@ -37,7 +37,7 @@
 	"devDependencies": {
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
-		"typescript": "^4.4.4"
+		"typescript": "^4.5.0-beta"
 	},
 	"peerDependencies": {
 		"next": "^12.0.2",

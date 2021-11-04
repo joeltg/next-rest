@@ -2,7 +2,7 @@
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme) [![license](https://img.shields.io/github/license/joeltg/next-rest)](https://opensource.org/licenses/MIT) [![NPM version](https://img.shields.io/npm/v/next-rest)](https://www.npmjs.com/package/next-rest) ![TypeScript types](https://img.shields.io/npm/types/next-rest)
 
-Typesafe REST APIs for Next.js.
+Typesafe REST APIs for Next.js. **Requires TypeScript 4.5+** (currently in beta).
 
 ## Table of Contents
 
@@ -31,7 +31,7 @@ Limitations:
 
 - **JSON-only**. next-rest is JSON-only.
 - **Internal use only**. next-rest is designed for implementing and calling REST APIs **within** a single Next.js application. You can't export your API types, or import a different project's API types. If _that's_ what you're after, you probably want something like [restyped](https://github.com/rawrmaan/restyped/).
-- Requires TypeScript 4.4+, Next.js 12+, and React 17+
+- Requires TypeScript 4.5+, Next.js 12+, and React 17+
 
 ## Install
 
