@@ -4,11 +4,11 @@
 	"description": "Typesafe REST APIs for Next.js",
 	"files": [
 		"api/*.d.ts",
-		"api/*/*.js",
-		"server/*/*.js",
-		"server/*/*.js",
-		"client/*/*.js",
-		"client/*/*.js"
+		"api/*.js",
+		"server/*.js",
+		"server/*.d.ts",
+		"client/*.js",
+		"client/*.d.ts"
 	],
 	"exports": {
 		"./api": {

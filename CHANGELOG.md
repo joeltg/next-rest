@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.4.2]
+
+## [0.4.1]
+
+### Changed
+
+- Refactor away from compsite TypeScript build mode
+
 ## [0.4.0]
 
 ### Changed
@@ -29,7 +37,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Refactored to use subpath exports and TypeScript build mode
 
-[unreleased]: https://github.com/joeltg/next-rest/compare/v0.4.0...HEAD
+[unreleased]: https://github.com/joeltg/next-rest/compare/v0.4.2...HEAD
+[0.4.2]: https://github.com/joeltg/next-rest/compare/v0.4.2
+[0.4.1]: https://github.com/joeltg/next-rest/compare/v0.4.1
 [0.4.0]: https://github.com/joeltg/next-rest/compare/v0.4.0
 [0.3.1]: https://github.com/joeltg/next-rest/compare/v0.3.1
 [0.3.0]: https://github.com/joeltg/next-rest/compare/v0.3.0
