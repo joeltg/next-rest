@@ -1,8 +1,5 @@
 {
 	"extends": "../tsconfig-base.json",
-	"include": ["."],
-	"compilerOptions": {
-		"outDir": "../lib/server"
-	},
+	"include": ["index.ts", "error.ts", "option.ts"],
 	"references": [{ "path": "../api" }]
 }
