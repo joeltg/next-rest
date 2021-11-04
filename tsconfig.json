@@ -4,6 +4,7 @@
 		"module": "ES6",
 		"target": "ES2020",
 		"moduleResolution": "node",
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"declaration": true
 	}
 }
