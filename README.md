@@ -41,14 +41,7 @@ npm i next-rest
 
 ## Usage
 
-The easiest way to understand next-rest is to clone the example repo [joeltg/next-rest-example](https://github.com/joeltg/next-rest-example) and poke around with VSCode.
-
 There are four basic steps. Most of the work happens inside the API route pages - once you've set those up right, you can just `import api from "next-rest/client"` from any client page or component and things will work like magic.
-
-1. (Server-side) defining runtime types for the request headers, request body, response headers, and response body for each method on each route
-2. In each server API route page, augmenting the `next-rest/api` module with
-3. In each server API route page, default exporting a handler `next-rest/server` exports a method `makeHandler` that you use to implement your
-4. Call your API from the client by importing
 
 ### Defining runtime types
 
@@ -138,11 +131,11 @@ declare module "next-rest/api" {
 
 The last thing to do in each server-side API route page is export the actual API handler. Next.js expects the default export to be a function `(req: NextApiRequest, res: NextApiResponse) => void` which we create by calling the `makeHandler` method exported frun `next-rest/server`.
 
-`makeHandler` is generic in a single string parameter an **needs to be explicitly parametrized** with the route for the page. We pass `makeHandler` a configuration object that contains, for each method, custom type predicates for the request headers and request bodies, and an `exec` method implementing the actual handler for that method at that route.
+`makeHandler` is generic in a single string parameter an **needs to be explicitly parametrized** with the route for the page. We pass `makeHandler` a configuration object that contains, for each method, [custom type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) for the request headers and request bodies, and an `exec` method implementing the actual handler for that method at that route.
 
-You should be able to get custom type predicates from you runtime validation library. For io-ts, they're the `.is` property of the codec, like `getRequestHeaders.is: (value: unknown) => value is { accept: "application/json" })`.
+You should be able to get custom type predicates from your runtime validation library. For io-ts, they're the `.is` property of the codec, like `getRequestHeaders.is: (value: unknown) => value is { accept: "application/json" })`.
 
-Implementing the exec method is where the magic starts kicking in: it takes a single `{ params, headers, body }` argument, but you don't have to declare any types. TypeScript knows to infer `params` the route path parametrizing `makeHandler` (!!) and to infer `headers` and `body` from the augmented API module.
+Implementing the exec method is where the magic starts kicking in: it takes a single `{ params, headers, body }` argument, but you don't have to declare any types. TypeScript knows to infer `params` from the route path parametrizing `makeHandler` (!!) and to infer `headers` and `body` from the augmented API module.
 
 The exec method must return a Promise resolving to an object `{ headers, body }`. TypeScript will already know to expect the correct response headers and response body types and will complain if you don't provide them.
 
