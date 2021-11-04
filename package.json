@@ -3,17 +3,19 @@
 	"version": "0.4.3",
 	"description": "Typesafe REST APIs for Next.js",
 	"files": [
-		"api/*.d.ts",
-		"api/*.js",
+		"index.js",
+		"index.d.ts",
 		"server/*.js",
 		"server/*.d.ts",
 		"client/*.js",
 		"client/*.d.ts"
 	],
+	"main": "index.js",
+	"types": "index.d.ts",
 	"exports": {
-		"./api": {
-			"types": "./api/index.d.ts",
-			"default": "./api/index.js"
+		"./": {
+			"types": "./index.d.ts",
+			"default": "./index.js"
 		},
 		"./client": {
 			"types": "./client/index.d.ts",

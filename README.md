@@ -94,12 +94,12 @@ type DeleteResponseBody = void
 
 ### Augmenting the API module
 
-The central problem in designing a end-to-end typesafe API is finding a way to share types between server and client code without sharing anything else (ie without accidentally bundling actual server code into the client). We do this with next-rest by augmenting the `API` type in the `next-rest/api` module inside every API route page. These augmentations get merged and the client code in `next-rest/client` is able to access the merged API type by also importing `next-rest/api`.
+The central problem in designing a end-to-end typesafe API is finding a way to share types between server and client code without sharing anything else (ie without accidentally bundling actual server code into the client). We do this with next-rest by augmenting the `API` type in the `next-rest` module inside every API route page. These augmentations get merged and the client code in `next-rest/client` is able to access the merged API type by also importing `next-rest`.
 
 ```ts
 // pages/api/widget/[id].ts
 
-declare module "next-rest/api" {
+declare module "next-rest" {
 	interface API {
 		"/api/widgets/[id]": Route<{
 			GET: {
@@ -215,7 +215,7 @@ type DeleteRequestBody = t.TypeOf<typeof deleteRequestBody>
 type DeleteResponseHeaders = {}
 type DeleteResponseBody = void
 
-declare module "next-rest/api" {
+declare module "next-rest" {
 	interface API {
 		"/api/widgets/[id]": Route<{
 			GET: {
@@ -267,7 +267,7 @@ export default makeHandler<"/api/widgets/[id]">({
 
 ### Using the API client
 
-Now that we've implemented our route on the server and augmented the `next-rest/api` module, we can start using the client API!
+Now that we've implemented our route on the server and augmented the `next-rest` module, we can start using the client API!
 
 The client api is the default export of `next-rest/client`, and it's an object of functions for every HTTP method. This means you invoke the api like this:
 
@@ -398,7 +398,7 @@ If the client receives any response other than 200, it will throw an instance of
 
 ```ts
 import { StatusCodes } from "http-status-codes"
-import api, { ClientError } from "next-rest/api"
+import api, { ClientError } from "next-rest/client"
 
 function deleteWidget(id: string, updatedAt: string) {
 	api

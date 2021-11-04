@@ -8,7 +8,7 @@ import type {
 	RequestHeaders,
 	ResponseHeaders,
 	Params,
-} from "../api"
+} from "../index.js"
 
 import { ClientError } from "./error.js"
 export { ClientError } from "./error.js"

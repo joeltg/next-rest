@@ -12,7 +12,7 @@ import type {
 	ResponseBody,
 	RequestHeaders,
 	ResponseHeaders,
-} from "../api"
+} from "../index.js"
 
 import type { Right, Left, Either } from "./option.js"
 
