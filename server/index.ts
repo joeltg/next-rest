@@ -29,7 +29,13 @@ const hasMethod = <R extends Routes>(
 	methods: Methods<R>
 ): method is MethodsByRoute<R> => method in methods
 
-type Result<R extends Routes, M extends MethodsByRoute<R>> = {
+type Input<R extends Routes, M extends MethodsByRoute<R>> = {
+	params: Params<R>
+	headers: RequestHeaders<M, R>
+	body: RequestBody<M, R>
+}
+
+type Output<R extends Routes, M extends MethodsByRoute<R>> = {
 	headers: ResponseHeaders<M, R>
 	body: ResponseBody<M, R>
 }
@@ -37,11 +43,7 @@ type Result<R extends Routes, M extends MethodsByRoute<R>> = {
 type MethodImplementation<R extends Routes, M extends MethodsByRoute<R>> = {
 	headers: (headers: IncomingHttpHeaders) => headers is RequestHeaders<M, R>
 	body: (body: unknown) => body is RequestBody<M, R>
-	exec: (request: {
-		params: Params<R>
-		headers: RequestHeaders<M, R>
-		body: RequestBody<M, R>
-	}) => Promise<Result<R, M>>
+	exec: (request: Input<R, M>) => Promise<Output<R, M>>
 }
 
 type Methods<R extends Routes> = {
@@ -69,7 +71,7 @@ export const makeHandler =
 			return error(res, StatusCodes.BAD_REQUEST)
 		}
 
-		type Success = Result<R, MethodsByRoute<R>>
+		type Success = Output<R, MethodsByRoute<R>>
 		const result: Either<any, Success> = await implementation
 			.exec({ params: req.query as Params<R>, headers: req.headers, body })
 			.then((right): Right<Success> => ({ _tag: "Right", right }))
@@ -81,10 +83,11 @@ export const makeHandler =
 				res.setHeader(key, headers[key] as string)
 			}
 
+			res.status(StatusCodes.OK)
 			if (body === undefined) {
-				res.status(StatusCodes.NO_CONTENT).end()
+				res.end()
 			} else {
-				res.status(StatusCodes.OK).json(body)
+				res.json(body)
 			}
 		} else if (result.left instanceof ServerError) {
 			const message = result.left.message

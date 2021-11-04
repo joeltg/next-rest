@@ -6,7 +6,7 @@ export type Route<T extends RouteSignature> = T
 
 export type Routes = keyof API
 
-type RouteSignature = Partial<Record<Method, MethodSignature>>
+type RouteSignature = Partial<Record<Methods, MethodSignature>>
 
 interface MethodSignature {
 	request: {
@@ -19,7 +19,7 @@ interface MethodSignature {
 	}
 }
 
-export type Method = "GET" | "PUT" | "POST" | "HEAD" | "PATCH" | "DELETE"
+export type Methods = "GET" | "PUT" | "POST" | "HEAD" | "PATCH" | "DELETE"
 
 type GetMethodSignature<M, R> = R extends Routes
 	? API[R] extends RouteSignature
@@ -30,21 +30,21 @@ type GetMethodSignature<M, R> = R extends Routes
 	: never
 
 export type RequestBody<
-	M extends Method,
+	M extends Methods,
 	R extends Routes
 > = GetMethodSignature<M, R> extends MethodSignature
 	? GetMethodSignature<M, R>["request"]["body"]
 	: void
 
 export type ResponseBody<
-	M extends Method,
+	M extends Methods,
 	R extends Routes
 > = GetMethodSignature<M, R> extends MethodSignature
 	? GetMethodSignature<M, R>["response"]["body"]
 	: void
 
 export type RequestHeaders<
-	M extends Method,
+	M extends Methods,
 	R extends Routes
 > = GetMethodSignature<M, R> extends MethodSignature
 	? GetMethodSignature<M, R>["request"]["headers"] extends IncomingHttpHeaders
@@ -53,7 +53,7 @@ export type RequestHeaders<
 	: never
 
 export type ResponseHeaders<
-	M extends Method,
+	M extends Methods,
 	R extends Routes
 > = GetMethodSignature<M, R> extends MethodSignature
 	? GetMethodSignature<M, R>["response"]["headers"] extends IncomingHttpHeaders
@@ -61,12 +61,12 @@ export type ResponseHeaders<
 		: never
 	: never
 
-export type RoutesByMethod<M extends Method> = {
+export type RoutesByMethod<M extends Methods> = {
 	[R in Routes]: M extends keyof API[R] ? R : never
 }[Routes]
 
 export type MethodsByRoute<R extends Routes> = {
-	[M in keyof API[R]]: M extends Method ? M : never
+	[M in keyof API[R]]: M extends Methods ? M : never
 }[keyof API[R]]
 
 export type Params<R extends string> =

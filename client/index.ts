@@ -1,7 +1,7 @@
 import StatusCodes from "http-status-codes"
 
 import type {
-	Method,
+	Methods,
 	RoutesByMethod,
 	RequestBody,
 	ResponseBody,
@@ -26,66 +26,37 @@ function makeURL<R extends string>(route: R, params: Params<R>): string {
 			if (param in p) {
 				const values = p[param]
 				if (Array.isArray(values)) {
-					delete p[param]
 					for (const value of values) {
 						path.push(encodeURIComponent(value))
 					}
 				} else {
-					throw new ClientError(
-						StatusCodes.BAD_REQUEST,
-						`Invalid URL rest parameter: ${param}`
-					)
+					throw new Error(`Invalid URL rest parameter: ${param}`)
 				}
 			}
 		} else if (restComponentPattern.test(component)) {
 			const [{}, param] = restComponentPattern.exec(component)!
 			const values = p[param]
 			if (Array.isArray(values)) {
-				delete p[param]
 				for (const value of values) {
 					path.push(encodeURIComponent(value))
 				}
 			} else {
-				throw new ClientError(
-					StatusCodes.BAD_REQUEST,
-					`Invalid URL rest parameter: ${param}`
-				)
+				throw new Error(`Invalid URL rest parameter: ${param}`)
 			}
 		} else if (componentPattern.test(component)) {
 			const [{}, param] = componentPattern.exec(component)!
 			const value = p[param]
 			if (typeof value === "string") {
-				delete p[param]
 				path.push(encodeURIComponent(value))
 			} else {
-				throw new ClientError(
-					StatusCodes.BAD_REQUEST,
-					`Invalid URL parameter: ${param}`
-				)
+				throw new Error(`Invalid URL parameter: ${param}`)
 			}
 		} else {
 			path.push(encodeURIComponent(component))
 		}
 	}
 
-	const keys = Object.keys(params)
-	if (keys.length > 0) {
-		const query: string[] = []
-		for (const key of keys) {
-			const value = p[key]
-			if (typeof value === "string") {
-				query.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-			} else if (value !== undefined) {
-				throw new ClientError(
-					StatusCodes.BAD_REQUEST,
-					`Invalid URL query parameter: ${key}`
-				)
-			}
-		}
-		return `${path.join("/")}?${query.join("&")}`
-	} else {
-		return path.join("/")
-	}
+	return path.join("/")
 }
 
 function parseHeaders(headers: Headers): Record<string, string> {
@@ -96,7 +67,7 @@ function parseHeaders(headers: Headers): Record<string, string> {
 	return result
 }
 
-async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
+async function clientFetch<M extends Methods, R extends RoutesByMethod<M>>(
 	method: M,
 	route: R,
 	params: Params<R>,
@@ -104,11 +75,7 @@ async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
 	body: RequestBody<M, R>
 ): Promise<{ headers: ResponseHeaders<M, R>; body: ResponseBody<M, R> }> {
 	const mode = "same-origin"
-	const init: RequestInit = {
-		method,
-		mode,
-		headers: headers as Record<string, string>,
-	}
+	const init: RequestInit = { method, mode, headers }
 
 	if (body !== undefined) {
 		init.body = JSON.stringify(body)
@@ -116,20 +83,22 @@ async function clientFetch<M extends Method, R extends RoutesByMethod<M>>(
 
 	const url = makeURL(route, params)
 	const res = await fetch(url, init)
-	if (res.status === StatusCodes.NO_CONTENT) {
-		const responseHeaders = parseHeaders(res.headers) as ResponseHeaders<M, R>
-		return { headers: responseHeaders, body: undefined as ResponseBody<M, R> }
-	} else if (res.status === StatusCodes.OK) {
+	if (res.status !== StatusCodes.OK) {
+		throw new ClientError(res.status, await res.text())
+	}
+
+	const responseHeaders = parseHeaders(res.headers) as ResponseHeaders<M, R>
+	const contentType = res.headers.get("content-type")
+	if (contentType === "application/json") {
 		const responseBody = await res.json()
-		const responseHeaders = parseHeaders(res.headers) as ResponseHeaders<M, R>
 		return { headers: responseHeaders, body: responseBody }
 	} else {
-		throw new ClientError(res.status)
+		return { headers: responseHeaders, body: undefined as ResponseBody<M, R> }
 	}
 }
 
 const makeMethod =
-	<M extends Method>(method: M) =>
+	<M extends Methods>(method: M) =>
 	<R extends RoutesByMethod<M>>(
 		route: R,
 		request: {
