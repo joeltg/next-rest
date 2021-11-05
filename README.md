@@ -133,7 +133,7 @@ Notice that the each entry is wrapped in a `Route<...>`. The `Route` type is jus
 
 The last thing to do in each server-side API route page is export the actual API handler. Next.js expects the default export to be a function `(req: NextApiRequest, res: NextApiResponse) => void` which we create by calling the `makeHandler` method exported frun `next-rest/server`.
 
-`makeHandler` is generic in a single string parameter an **needs to be explicitly parametrized** with the route for the page. We pass `makeHandler` a configuration object that contains, for each method, [custom type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) for the request headers and request bodies, and an `exec` method implementing the actual handler for that method at that route.
+`makeHandler` takes a string API route as its first argument. The second argument is a configuration object that contains - for each method supported by the route - [custom type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) for the request headers and bodies, and an `exec` method implementing the actual handler for that method at that route.
 
 You should be able to get custom type predicates from your runtime validation library. For io-ts, they're the `.is` property of the codec, like `getRequestHeaders.is: (value: unknown) => value is { accept: "application/json" })`.
 
@@ -146,7 +146,7 @@ The exec method must return a Promise resolving to an object `{ headers, body }`
 
 import { makeHandler } from "next-rest/server"
 
-export default makeHandler<"/api/widgets/[id]">({
+export default makeHandler("/api/widgets/[id]", {
 	GET: {
 		headers: getRequestHeaders.is,
 		body: getRequestBody.is,
@@ -244,7 +244,7 @@ declare module "next-rest" {
 	}
 }
 
-export default makeHandler<"/api/widgets/[id]">({
+export default makeHandler("/api/widgets/[id]", {
 	GET: {
 		headers: getRequestHeaders.is,
 		body: getRequestBody.is,
@@ -364,7 +364,7 @@ For example, we could modify our DELETE implementation to return a more informat
 import { StatusCodes } from "http-status-codes"
 import { makeHandler, ServerError } from "next-rest/server"
 
-export default makeHandler<"/api/widgets/[id]">({
+export default makeHandler("/api/widgets/[id]", {
 	// ...
 	DELETE: {
 		headers: deleteRequestHeaders.is,
