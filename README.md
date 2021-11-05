@@ -127,7 +127,7 @@ declare module "next-rest" {
 }
 ```
 
-Notice that the each entry is wrapped in a `Route<...>`. The `Route` type is just defined as `Route<T exends MethodImplementation> = T` and is just used to typecheck the method implementation. You don't have to `import` or `export` the `API` or `Route` types inside the `declare module "next-rest" { ... }` block; they're already in the module scope.
+Notice that the each entry is wrapped in a `Route<...>`. The `Route` type is just defined as `Route<T extends MethodImplementation> = T` and is just used to typecheck the method implementation. You don't have to `import` or `export` the `API` or `Route` types inside the `declare module "next-rest" { ... }` block; they're already in the module scope.
 
 ### Exporting the route handler
 
