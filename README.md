@@ -351,7 +351,8 @@ If you throw an error from inside a method implementation on the server (ie insi
 
 ```ts
 declare class ServerError extends Error {
-	constructor(readonly status: number, readonly message: string)
+	readonly status: number
+	constructor(status: number, message: string)
 }
 ```
 
@@ -391,8 +392,9 @@ export default makeHandler<"/api/widgets/[id]">({
 There is a symmetric class `ClientError` exported from `next-rest/client` that we can use to handle this on the client as well.
 
 ```ts
-declare class ClientError extends Error {
-	constructor(readonly status: number, message: string)
+class ClientError extends Error {
+	readonly status: number
+	constructor(status: number, message: string)
 }
 ```
 
