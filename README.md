@@ -24,7 +24,7 @@ This library is a framework for writing **end-to-end** typesafe JSON REST APIs f
 Features:
 
 - **Modularity**. Instead of making you define all of your route types in one place, next-rest uses module augmentation so that you can declare each route's type in their own respective file. All of the logic for an API route `/api/foo/bar` is contained in the `/pages/api/foo/bar.ts` page.
-- **Minimalism**. The client API is 150 lines and just calls `fetch` like you'd expect. next-rest has one non-dev dependency on [http-status-codes](https://www.npmjs.com/package/http-status-codes). All validation happens on the server; using next-rest won't cause your validation library to get bundled into the client.
+- **Minimalism**. The client API is 100 lines and just calls `fetch` like you'd expect. next-rest has one non-dev dependency on [http-status-codes](https://www.npmjs.com/package/http-status-codes). All validation happens on the server; using next-rest won't cause your validation library to get bundled into the client.
 - **Safety**: next-rest lets you write APIs where the URL parameters, request headers, request body, response headers, and response body are all (!!) strongly typed for each combination of route and method. All of your API calls get typechecked at compile-time by TypeScript _and_ validated at runtime on the server.
 
 Limitations:
@@ -126,6 +126,8 @@ declare module "next-rest" {
 	}
 }
 ```
+
+Notice that the each entry is wrapped in a `Route<...>`. The `Route` type is just defined as `Route<T exends MethodImplementation> = T` and is just used to typecheck the method implementation. You don't have to `import` or `export` the `API` or `Route` types inside the `declare module "next-rest" { ... }` block; they're already in the module scope.
 
 ### Exporting the route handler
 

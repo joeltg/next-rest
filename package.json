@@ -5,10 +5,8 @@
 	"files": [
 		"index.js",
 		"index.d.ts",
-		"server/*.js",
-		"server/*.d.ts",
-		"client/*.js",
-		"client/*.d.ts"
+		"server",
+		"client"
 	],
 	"main": "index.js",
 	"types": "index.d.ts",
@@ -27,8 +25,7 @@
 		}
 	},
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "tsc --build"
+		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
 		"type": "git",
