@@ -77,11 +77,21 @@ async function clientFetch(method, route, params, headers, body) {
 
 	const responseHeaders = parseHeaders(res.headers)
 	const contentType = res.headers.get("content-type")
-	if (contentType === "application/json") {
+	const mimeType = parseMimeType(contentType)
+	if (mimeType === "application/json") {
 		const responseBody = await res.json()
 		return { headers: responseHeaders, body: responseBody }
 	} else {
 		return { headers: responseHeaders, body: undefined }
+	}
+}
+
+function parseMimeType(contentType) {
+	const index = contentType.indexOf(";")
+	if (index === -1) {
+		return contentType
+	} else {
+		return contentType.slice(0, index)
 	}
 }
 
