@@ -68,7 +68,10 @@ async function clientFetch(method, route, params, headers, body) {
 
 	const url = makeURL(route, params)
 	const res = await fetch(url, init)
-	if (res.status !== StatusCodes.OK) {
+	if (
+		res.status !== StatusCodes.OK &&
+		res.status !== StatusCodes.NOT_MODIFIED
+	) {
 		throw new ClientError(res.status, await res.text())
 	}
 

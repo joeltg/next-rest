@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.6.2]
+
+### Changed
+
+- Accept both `200 OK` and `304 Not Modified` as successful status codes
+
 ## [0.6.1]
 
 ### Changed
@@ -71,7 +77,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Refactored to use subpath exports and TypeScript build mode
 
-[unreleased]: https://github.com/joeltg/next-rest/compare/v0.6.1...HEAD
+[unreleased]: https://github.com/joeltg/next-rest/compare/v0.6.2...HEAD
+[0.6.2]: https://github.com/joeltg/next-rest/compare/v0.6.2
 [0.6.1]: https://github.com/joeltg/next-rest/compare/v0.6.1
 [0.6.0]: https://github.com/joeltg/next-rest/compare/v0.6.0
 [0.5.0]: https://github.com/joeltg/next-rest/compare/v0.5.0
