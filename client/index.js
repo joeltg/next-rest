@@ -87,11 +87,15 @@ async function clientFetch(method, route, params, headers, body) {
 }
 
 function parseMimeType(contentType) {
-	const index = contentType.indexOf(";")
-	if (index === -1) {
-		return contentType
+	if (typeof contentType === "string") {
+		const index = contentType.indexOf(";")
+		if (index === -1) {
+			return contentType
+		} else {
+			return contentType.slice(0, index)
+		}
 	} else {
-		return contentType.slice(0, index)
+		return null
 	}
 }
 
