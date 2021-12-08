@@ -1,6 +1,6 @@
 {
 	"name": "next-rest",
-	"version": "0.6.3",
+	"version": "0.6.4",
 	"type": "module",
 	"description": "Typesafe REST APIs for Next.js",
 	"files": [
