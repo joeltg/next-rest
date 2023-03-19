@@ -69,6 +69,11 @@ export type MethodsByRoute<R extends keyof API> = {
 	[M in keyof API[R]]: M extends Methods ? M : never
 }[keyof API[R]]
 
+export type QueryParams<R extends string> = 
+	R extends `${infer Param},${infer Rest}`
+		? { [P in Param]: string } & QueryParams<Rest>
+		: { [P in R]: string }
+
 export type Params<R extends string> =
 	R extends `/[[...${infer OptionalCatchAllParam}]]${infer OptionalCatchAllRest}`
 		? { [P in OptionalCatchAllParam]?: string[] } & Params<OptionalCatchAllRest>
@@ -78,4 +83,8 @@ export type Params<R extends string> =
 		? { [P in Param]: string } & Params<Rest>
 		: R extends `/${string}/${infer Rest}`
 		? Params<`/${Rest}`>
+		: R extends `/${string}?{${infer AllQueryParams}}`
+		? QueryParams<AllQueryParams>
+		: R extends `?{${infer AllQueryParams}}`
+		? QueryParams<AllQueryParams>
 		: {}
